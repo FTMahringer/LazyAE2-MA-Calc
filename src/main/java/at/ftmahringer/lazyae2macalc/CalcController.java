@@ -13,6 +13,10 @@ public class CalcController {
     public TextField patternProviderTwo;
     public TextField coProzessorTwo;
 
+    public TextField customPercent;
+    public TextField customPatterProvider;
+    public TextField customCoProzessor;
+
     public void calculate(ActionEvent actionEvent) {
         // please get the widht and height as Integer and check if they are valid
 
@@ -50,5 +54,38 @@ public class CalcController {
 
         patternProviderTwo.setText(String.valueOf(patternProviderCountTwo));
         coProzessorTwo.setText(String.valueOf(coProcessorsCountTwo));
+    }
+
+    public void calcCustom(ActionEvent actionEvent) {
+        int customPercent = Integer.parseInt(this.customPercent.getText());
+        if (customPercent < 0 || customPercent > 100) {
+            AlertsManager.errorAlert("Error", "Invalid input", "Custom percentage must be between 0 and 100");
+        }
+
+        int width = Integer.parseInt(this.width.getText());
+        int height = Integer.parseInt(this.height.getText());
+        if (width < 0 || height < 0) {
+            AlertsManager.errorAlert("Error", "Invalid input", "Width and height must be positive integers");
+        }
+
+        int cubeBlocks = width * width * height;
+        int framesTopBottom = 4 * (width-1);
+        int framesSide = 4 * (height-2);
+        int framesTotal = framesTopBottom * 2 + framesSide;
+        frames.setText(String.valueOf(framesTotal));
+
+        int ventsTopBottom = (width-2) * (width-2);
+        int ventsSide = ((height-2) * (width-2)) * 4;
+        int ventsTotal = (ventsTopBottom * 2) + ventsSide;
+        vents.setText(String.valueOf(ventsTotal));
+
+        int centerCube = cubeBlocks - (framesTotal + ventsTotal);
+
+        // Fill centerCube with patternProvider and coProcessors in a custom ratio
+        int patternProviderCount = centerCube * customPercent / 100;
+        int coProcessorsCount = centerCube - patternProviderCount;
+
+        customPatterProvider.setText(String.valueOf(patternProviderCount));
+        customCoProzessor.setText(String.valueOf(coProcessorsCount));
     }
 }
